@@ -6,7 +6,10 @@
              ios:Page.UseSafeArea="true">
     <ContentPage.Content>
         <StackLayout>
-            <Button Text="I am a Button"  />
+            <CheckBox TintColor="Pink"  />
+            <CheckBox TintColor="Green"  />
+            <CheckBox TintColor="Green" IsEnabled="False"  />
+            <CheckBox TintColor="Pink" IsEnabled="False" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

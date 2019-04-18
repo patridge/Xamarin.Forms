@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel;
 using Windows.UI.Xaml;
-
-using WindowsCheckbox = Windows.UI.Xaml.Controls.CheckBox;
+using Windows.UI.Xaml.Media;
 
 namespace Xamarin.Forms.Platform.UWP
 {
-	public class CheckBoxRenderer : ViewRenderer<CheckBox, WindowsCheckbox>
+	public class CheckBoxRenderer : ViewRenderer<CheckBox, FormsCheckBox>
 	{
+		Brush _tintDefaultBrush;
+
 		protected override void OnElementChanged(ElementChangedEventArgs<CheckBox> e)
 		{
 			base.OnElementChanged(e);
@@ -15,7 +16,10 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				if (Control == null)
 				{
-					var control = new WindowsCheckbox();
+					var control = new FormsCheckBox() {
+						Style = Windows.UI.Xaml.Application.Current.Resources["FormsCheckBoxStyle"] as Windows.UI.Xaml.Style
+					   };
+
 					control.Checked += OnNativeChecked;
 					control.Unchecked += OnNativeChecked;
 					//control.ClearValue(WindowsCheckbox.IsCheckedProperty);
@@ -26,6 +30,7 @@ namespace Xamarin.Forms.Platform.UWP
 				Control.IsChecked = Element.IsChecked;
 				
 				UpdateFlowDirection();
+				UpdateTintColor();
 			}
 		}
 
@@ -41,6 +46,10 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				UpdateFlowDirection();
 			}
+			else if(e.PropertyName == CheckBox.IsCheckedProperty.PropertyName)
+			{
+				UpdateTintColor();
+			}
 		}
 
 		protected override bool PreventGestureBubbling { get; set; } = true;
@@ -53,6 +62,12 @@ namespace Xamarin.Forms.Platform.UWP
 		void UpdateFlowDirection()
 		{
 			Control.UpdateFlowDirection(Element);
+		}
+
+		void UpdateTintColor()
+		{
+			BrushHelpers.UpdateColor(Element.TintColor, ref _tintDefaultBrush,
+				() => Control.TintBrush, brush => Control.TintBrush = brush);
 		}
 	}
 }

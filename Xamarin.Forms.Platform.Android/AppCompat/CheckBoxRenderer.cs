@@ -14,6 +14,7 @@ using Android.OS;
 using Android.Widget;
 using Android.Content.Res;
 using Android.Support.V4.Widget;
+using AAttribute = Android.Resource.Attribute;
 
 namespace Xamarin.Forms.Platform.Android
 {
@@ -187,13 +188,9 @@ namespace Xamarin.Forms.Platform.Android
 
 			var mode = PorterDuff.Mode.SrcIn;
 
-			var stateChecked = global::Android.Resource.Attribute.StateChecked;
-			var stateEnabled = global::Android.Resource.Attribute.StateEnabled;
-			var statePressed = global::Android.Resource.Attribute.StatePressed;
-
-			//Need to find a way to get this color out of Android somehow.
-			var uncheckedDefault = AColor.Gray;
-			var disabledColor = AColor.LightGray;
+			var stateChecked = AAttribute.StateChecked;
+			var stateEnabled = AAttribute.StateEnabled;
+			var statePressed = AAttribute.StatePressed;
 
 			var tintColor = CheckBox.TintColor == Color.Default ? Color.Accent.ToAndroid() : CheckBox.TintColor.ToAndroid();
 
@@ -208,21 +205,24 @@ namespace Xamarin.Forms.Platform.Android
 					},
 					new int[]
 					{
-						disabledColor,
 						tintColor,
 						tintColor,
 						tintColor,
-						disabledColor,
+						tintColor,
+						tintColor,
 					});
-				
 
+			ColorStateList colorStateList;
 			if (Forms.IsLollipopOrNewer)
 			{
+				colorStateList = Control.ButtonTintList;
+
 				Control.ButtonTintList = list;
 				Control.ButtonTintMode = mode;
 			}
 			else
 			{
+				colorStateList = CompoundButtonCompat.GetButtonTintList(Control);
 				CompoundButtonCompat.SetButtonTintList(Control, list);
 				CompoundButtonCompat.SetButtonTintMode(Control, mode);
 			}

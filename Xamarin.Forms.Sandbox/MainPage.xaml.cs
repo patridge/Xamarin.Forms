@@ -16,5 +16,19 @@ namespace Xamarin.Forms.Sandbox
 		{
 			InitializeComponent();
 		}
+
+		private void Button_Clicked(object sender, EventArgs e)
+		{
+			if(cbDefaultTest.TintColor == Color.Default)
+			{
+				cbDefaultTest.TintColor = Color.Green;
+				cbDefaultTest2.TintColor = Color.Green;
+			}
+			else
+			{
+				cbDefaultTest.TintColor = Color.Default;
+				cbDefaultTest2.TintColor = Color.Default;
+			}
+		}
 	}
 }

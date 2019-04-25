@@ -10,6 +10,15 @@
             <CheckBox TintColor="Green"  />
             <CheckBox TintColor="Green" IsEnabled="False"  />
             <CheckBox TintColor="Pink" IsEnabled="False" />
+            <CheckBox TintColor="Green" IsEnabled="False" IsChecked="True"  />
+            <CheckBox TintColor="Pink" IsEnabled="False" IsChecked="True"/>
+            <CheckBox x:Name="cbNotGenerating"  />
+            <CheckBox x:Name="cbNotGenerating2" IsChecked="True" />
+
+            <CheckBox x:Name="cbDefaultTest" IsChecked="True" />
+            <CheckBox x:Name="cbDefaultTest2"  />
+
+            <Button Text="Change Colors" Clicked="Button_Clicked"> </Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

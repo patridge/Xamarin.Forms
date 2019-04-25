@@ -17,7 +17,6 @@ namespace Xamarin.Forms.Platform.UWP
 			DependencyProperty.Register(nameof(TintBrush), typeof(Brush), typeof(FormsCheckBox),
 				new PropertyMetadata(default(Brush)));
 
-
 		public FormsCheckBox()
 		{
 			
@@ -28,7 +27,5 @@ namespace Xamarin.Forms.Platform.UWP
 			get { return (Brush)GetValue(TintBrushProperty); }
 			set { SetValue(TintBrushProperty, value); }
 		}
-
-
 	}
 }

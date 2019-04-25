@@ -6,7 +6,7 @@ namespace Xamarin.Forms.Platform.UWP
 {
 	public class CheckBoxRenderer : ViewRenderer<CheckBox, FormsCheckBox>
 	{
-		Brush _tintDefaultBrush;
+		Brush _tintDefaultBrush = Color.Blue.ToBrush();
 
 		protected override void OnElementChanged(ElementChangedEventArgs<CheckBox> e)
 		{
@@ -46,7 +46,7 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				UpdateFlowDirection();
 			}
-			else if(e.PropertyName == CheckBox.IsCheckedProperty.PropertyName)
+			else if(e.PropertyName == CheckBox.TintColorProperty.PropertyName)
 			{
 				UpdateTintColor();
 			}
@@ -68,6 +68,7 @@ namespace Xamarin.Forms.Platform.UWP
 		{
 			BrushHelpers.UpdateColor(Element.TintColor, ref _tintDefaultBrush,
 				() => Control.TintBrush, brush => Control.TintBrush = brush);
+			
 		}
 	}
 }

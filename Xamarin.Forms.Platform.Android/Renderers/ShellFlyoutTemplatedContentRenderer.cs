@@ -80,7 +80,7 @@ namespace Xamarin.Forms.Platform.Android
             UpdateFlyoutHeaderBehavior();
             _shellContext.Shell.PropertyChanged += OnShellPropertyChanged;
 
-            UpdateFlyoutBackgroundColor();
+            UpdateFlyoutBackground();
         }
 
         protected void OnElementSelected(Element element)
@@ -92,14 +92,15 @@ namespace Xamarin.Forms.Platform.Android
         {
             if (e.PropertyName == Shell.FlyoutHeaderBehaviorProperty.PropertyName)
                 UpdateFlyoutHeaderBehavior();
-            else if (e.PropertyName == Shell.FlyoutBackgroundColorProperty.PropertyName)
-                UpdateFlyoutBackgroundColor();
+            else if (e.IsOneOf(Shell.FlyoutBackgroundColorProperty, Shell.FlyoutBackgroundImageSourceProperty))
+                UpdateFlyoutBackground();
         }
 
-        protected virtual void UpdateFlyoutBackgroundColor()
+        protected virtual async void UpdateFlyoutBackground()
         {
             var color = _shellContext.Shell.FlyoutBackgroundColor;
-            if (_defaultBackground == null && color.IsDefault)
+			var imageSource = _shellContext.Shell.FlyoutBackgroundImageSource;
+			if (_defaultBackground == null && color.IsDefault && !_shellContext.Shell.IsSet(Shell.FlyoutBackgroundImageSourceProperty))
                 return;
 
             if (_defaultBackground == null)
@@ -109,6 +110,15 @@ namespace Xamarin.Forms.Platform.Android
                 _rootView.Background = _defaultBackground;
             else
                 _rootView.Background = new ColorDrawable(color.ToAndroid());
+
+			if (imageSource != null)
+			{
+				using (var drawable = await _shellContext.AndroidContext.GetFormsDrawableAsync(imageSource))
+				{
+					if (!_rootView.IsDisposed())
+						_rootView.Background = drawable;
+				}
+			}
         }
 
         protected virtual void UpdateFlyoutHeaderBehavior()

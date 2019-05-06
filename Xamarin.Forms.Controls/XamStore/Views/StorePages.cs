@@ -243,6 +243,19 @@ namespace Xamarin.Forms.Controls.XamStore
 				async () => await Shell.Current.GoToAsync(navEntry.Text, true)),
 			2, 16);
 
+			grid.Children.Add(MakeButton("bg image",
+				() => Shell.Current.FlyoutBackgroundImageSource = ImageSource.FromFile("cover1.jpg")),
+			0, 17);
+			grid.Children.Add(MakeButton("bg color",
+				() => Shell.Current.FlyoutBackgroundColor = Color.DarkGreen),
+			1, 17);
+			grid.Children.Add(MakeButton("clear bg",
+				() => {
+					Shell.Current.ClearValue(Shell.FlyoutBackgroundColorProperty);
+					Shell.Current.ClearValue(Shell.FlyoutBackgroundImageSourceProperty);
+				}),
+			2, 17);
+
 			Content = new ScrollView { Content = grid };
 
 			//var listView = new ListView();

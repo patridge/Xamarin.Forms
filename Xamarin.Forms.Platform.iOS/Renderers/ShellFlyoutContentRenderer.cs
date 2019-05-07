@@ -8,6 +8,7 @@ namespace Xamarin.Forms.Platform.iOS
 	public class ShellFlyoutContentRenderer : UIViewController, IShellFlyoutContentRenderer
 	{
 		UIVisualEffectView _blurView;
+		UIImageView _bgImage;
 		readonly IShellContext _shellContext;
 		UIView _headerView;
 		ShellTableViewController _tableViewController;
@@ -31,11 +32,11 @@ namespace Xamarin.Forms.Platform.iOS
 
 		protected virtual void HandleShellPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == Shell.FlyoutBackgroundColorProperty.PropertyName)
-				UpdateBackgroundColor();
+			if (e.IsOneOf(Shell.FlyoutBackgroundColorProperty, Shell.FlyoutBackgroundImageSourceProperty))
+				UpdateBackground();
 		}
 
-		protected virtual void UpdateBackgroundColor()
+		protected virtual async void UpdateBackground()
 		{
 			var color = _shellContext.Shell.FlyoutBackgroundColor;
 			View.BackgroundColor = color.ToUIColor(Color.White);
@@ -49,6 +50,26 @@ namespace Xamarin.Forms.Platform.iOS
 				if (_blurView.Superview != null)
 					_blurView.RemoveFromSuperview();
 			}
+
+			var imageSource = _shellContext.Shell.FlyoutBackgroundImageSource;
+			if (imageSource != null)
+			{
+				using (var nativeImage = await imageSource.GetNativeImageAsync())
+				{
+					if (nativeImage == null || View == null)
+						return;
+					_bgImage.Image = nativeImage;
+					View.InsertSubview(_bgImage, 0);
+					// pattern
+					//View.BackgroundColor = UIColor.FromPatternImage(nativeImage);
+				}
+			}
+			else if (_bgImage.Superview != null)
+			{
+				_bgImage.RemoveFromSuperview();
+				_bgImage.Image.Dispose();
+				_bgImage.Image = null;
+			}
 		}
 
 		public UIViewController ViewController => this;
@@ -59,6 +80,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 			_tableViewController.LayoutParallax();
 			_blurView.Frame = View.Bounds;
+			_bgImage.Frame = View.Bounds;
 		}
 
 		public override void ViewDidLoad()
@@ -75,8 +97,13 @@ namespace Xamarin.Forms.Platform.iOS
 			var effect = UIBlurEffect.FromStyle(UIBlurEffectStyle.Regular);
 			_blurView = new UIVisualEffectView(effect);
 			_blurView.Frame = View.Bounds;
+			_bgImage = new UIImageView
+			{
+				Frame = View.Bounds,
+				ContentMode = UIViewContentMode.ScaleAspectFit
+			};
 
-			UpdateBackgroundColor();
+			UpdateBackground();
 		}
 
 		public override void ViewWillAppear(bool animated)
